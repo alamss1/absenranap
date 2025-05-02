@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Absensi Rawat Inap</title>
+  <style>
+    body { font-family: sans-serif; padding: 2em; }
+    form { max-width: 400px; }
+    label { display: block; margin-top: 1em; }
+  </style>
+</head>
+<body>
+  <h1>Absensi Pegawai Rawat Inap</h1>
+  <form id="absenForm">
+    <label>Nama:
+      <input type="text" name="nama" required>
+    </label>
+    <label>Aksi:
+      <select name="aksi" required>
+        <option value="masuk">Masuk</option>
+        <option value="keluar">Keluar</option>
+      </select>
+    </label>
+    <button type="submit">Kirim</button>
+  </form>
+  <p id="respon" style="margin-top:1em;"></p>
+
+  <script>
+    document.getElementById("absenForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const form = e.target;
+      const data = {
+        nama: form.nama.value,
+        aksi: form.aksi.value,
+        waktu: new Date().toISOString()
+      };
+
+      try {
+        const res = await fetch("https://script.google.com/macros/s/AKfycbwhzdkQypYK3wShRsZaVdV-4qzqdLqMRznLySFXUxOOR9DneUSLZNIwzDyJwnzh6v-Q/exec", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+
+        const hasil = await res.text();
+        document.getElementById("respon").textContent = hasil;
+        form.reset();
+      } catch (error) {
+        document.getElementById("respon").textContent = "Gagal mengirim. Coba lagi.";
+        console.error(error);
+      }
+    });
+  </script>
+</body>
+</html>
